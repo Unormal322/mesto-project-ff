@@ -8,10 +8,7 @@ const handleEscape = (evt) => {
 
 // Функция открытия popup'a
 export function openModal(item) {
-    item.classList.toggle('popup_is-animated');
-    setTimeout( () => {
-        item.classList.toggle('popup_is-opened');
-    }, 100);
+    item.classList.toggle('popup_is-opened');
     document.addEventListener('keydown', handleEscape);
 };
 

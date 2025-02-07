@@ -5,7 +5,6 @@ import { openModal, closeModal } from './components/modal.js';
 
 // DOM элементы страницы
 const cardList = document.querySelector('.places__list');
-export const cardTemplate = document.querySelector('#card-template').content;
 const popupEditProfile = document.querySelector('.popup_type_edit');
 const popupAddNewCard = document.querySelector('.popup_type_new-card');
 const popupTypeImage = document.querySelector('.popup_type_image');
@@ -18,6 +17,8 @@ const jobInput = document.querySelector('.popup__input_type_description');
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 const formAddCard = document.forms['new-place'];
+const popupImage = document.querySelector('.popup__image');
+const popupImageCaption = document.querySelector('.popup__caption');
 
 // Выводим карточки на страницу
 for (let i = 0; i < initialCards.length; i++) {
@@ -28,6 +29,7 @@ for (let i = 0; i < initialCards.length; i++) {
 buttonProfileEdit.addEventListener('click', function () {
     openEditPopup();
 });
+
 buttonAddNewCard.addEventListener('click', function () {
     openModal(popupAddNewCard);
 });
@@ -54,13 +56,9 @@ allPopups.forEach( function (popup) {
 function sumbitProfileForm(evt) {
     evt.preventDefault(); // Отменяем стандартную отправку формы
 
-    // Получаем значения инпутов
-    const nameValue = nameInput.value;
-    const jobValue = jobInput.value;
-        
     // Выбираем нужные элементы и указываем значения
-    profileTitle.textContent = nameValue;
-    profileDescription.textContent = jobValue;
+    profileTitle.textContent = nameInput.value;
+    profileDescription.textContent = jobInput.value;
 
     closeModal(popupEditProfile);
 };
@@ -87,10 +85,6 @@ formAddCard.addEventListener('submit', addNewCard);
 
 // Функция просмотра изображения
 function viewImage(imageDescription, imageLink) {
-    // Переменные для работы функции
-    const popupImage = document.querySelector('.popup__image');
-    const popupImageCaption = document.querySelector('.popup__caption');
-
     // Устанавливаем значение переменных
     popupImage.src = imageLink;
     popupImage.alt = imageDescription;
