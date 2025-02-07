@@ -25,11 +25,12 @@ for (let i = 0; i < initialCards.length; i++) {
     cardList.append(createCard(initialCards[i], deleteCard, likeCard, viewImage));
 };
 
-// Обработчик открытия модального окна
+// Обработчик открытия popup'a редактирования профиля
 buttonProfileEdit.addEventListener('click', function () {
     openEditPopup();
 });
 
+// Обработчик открытия popup'a добавления карточки
 buttonAddNewCard.addEventListener('click', function () {
     openModal(popupAddNewCard);
 });

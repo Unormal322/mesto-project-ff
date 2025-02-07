@@ -18,7 +18,7 @@ export function createCard(card, removeCard, likeTheCard, viewingCard) {
     const likeButton = cardElement.querySelector('.card__like-button');
     likeButton.addEventListener('click', () => likeTheCard(likeButton));
     
-    // 
+    // Добавляем обработчик на изображение карточки
     cardImage.addEventListener('click', function () {
         viewingCard(card.name, card.link);
     });
