@@ -15,6 +15,7 @@ export function openModal(item) {
 // Функция закрытия popup'a
 export function closeModal(item) {
     item.classList.remove('popup_is-opened');
+    // убрать
     setTimeout( () => {
         item.classList.remove('popup_is-animated');
     }, 600);

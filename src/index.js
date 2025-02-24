@@ -20,8 +20,8 @@ const formAddCard = document.forms['new-place'];
 const popupImage = document.querySelector('.popup__image');
 const popupImageCaption = document.querySelector('.popup__caption');
 
-// Выводим карточки на страницу
-for (let i = 0; i < initialCards.length; i++) {
+// Выводим карточки на страницу (заменить)
+for (let i = 0; i < initialCards.length; i++) {т
     cardList.append(createCard(initialCards[i], deleteCard, likeCard, viewImage));
 };
 
