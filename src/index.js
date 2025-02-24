@@ -21,7 +21,7 @@ const popupImage = document.querySelector('.popup__image');
 const popupImageCaption = document.querySelector('.popup__caption');
 
 // Выводим карточки на страницу (заменить)
-for (let i = 0; i < initialCards.length; i++) {т
+for (let i = 0; i < initialCards.length; i++) {
     cardList.append(createCard(initialCards[i], deleteCard, likeCard, viewImage));
 };
 
