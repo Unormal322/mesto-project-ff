@@ -55,15 +55,13 @@ export function changeLike(likes, cardElement, currentUserId) {
     // Обновляем количество лайков
     numberOfLikes.textContent = likes.length;
 
-    // Проверяем, лайкнул ли текущий пользователь карточку
-    if (checkStatusLike(likes, currentUserId)) {
-        likeButton.classList.add('card__like-button_is-active');
-    } else {
-        likeButton.classList.remove('card__like-button_is-active');
-    }
+    // Используем toggle для переключения класса
+    likeButton.classList.toggle('card__like-button_is-active', checkStatusLike(likes, currentUserId));
 };
 
 // Функция проверки, лайкнул ли текущий пользователь карточку
 export function checkStatusLike(likes, currentUserId) {
     return likes.some((user) => user._id === currentUserId);
 };
+
+// likeButton.classList.toggle('card__like-button_is-active');

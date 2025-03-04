@@ -58,12 +58,6 @@ allPopups.forEach( function (popup) {
     });
 });
 
-// Функция обновления данных пользователя
-function editProfileInfo(data) {
-    nameInput.textContent = data.name;
-    jobInput.textContent = data.about;
-};
-
 // Функция отправки формы для профиля
 function sumbitProfileForm(evt) {
     evt.preventDefault(); // Отменяем стандартную отправку формы
@@ -81,7 +75,6 @@ function sumbitProfileForm(evt) {
 
     api.patchProfileInfo(name, about)
         .then((userData) => {
-            editProfileInfo(userData);
             closeModal(popupEditProfile);
             renderInfo(userData);
         })
@@ -169,7 +162,6 @@ function addNewAvatar(evt) {
             updateAvatarOnPage(userAvatar.avatar);
             closeModal(popupEditAvatar);
             formEditAvatar.reset();
-            clearValidation(formEditAvatar, validationConfig);
         })
         .catch((err) => {
             console.log(err);
