@@ -5,6 +5,9 @@ export function createCard(card, currentUserId, removeCard, likeTheCard, viewing
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
     const cardImage = cardElement.querySelector('.card__image');
 
+    // Сохраняем данные о лайках в атрибуте
+    cardElement.dataset.likes = JSON.stringify(card.likes);
+
     // Добавляем наполнение карточки
     cardElement.querySelector('.card__title').textContent = card.name;
     cardImage.src = card.link;
@@ -14,11 +17,10 @@ export function createCard(card, currentUserId, removeCard, likeTheCard, viewing
     const numberOfLikes = cardElement.querySelector('.number-of-likes');
     numberOfLikes.textContent = card.likes.length;
 
-    // Делаем проверку, создана ли карточка пользователем
+    // Проверяем, создана ли карточка текущим пользователем
     if (card.owner._id === currentUserId) {
         // Добавляем иконку удаления
         const deleteButton = cardElement.querySelector('.card__delete-button');
-        // Выводим иконку корзины
         deleteButton.style.display = 'block';
         deleteButton.addEventListener('click', () => removeCard(cardElement, card._id));
     }
@@ -26,67 +28,42 @@ export function createCard(card, currentUserId, removeCard, likeTheCard, viewing
     // Находим кнопку лайка
     const likeButton = cardElement.querySelector('.card__like-button');
 
-    // Выполним проверку, поставил ли пользователь лайк на карточку или нет с помощью метода some
-    const likedCard = card.likes.some((user) => {
-        return user._id === currentUserId;
-    })
-    
-    // Если ранее уже поставил лайк на данную карточку, добавляем кнопки класс active
-    if (likedCard) {
+    // Проверяем, лайкнул ли текущий пользователь карточку
+    if (checkStatusLike(card.likes, currentUserId)) {
         likeButton.classList.add('card__like-button_is-active');
     }
 
     // Добавляем обработчик на кнопку лайка
-    likeButton.addEventListener('click', () => likeTheCard(likeButton, card._id));
-    
+    likeButton.addEventListener('click', () => likeTheCard(cardElement, card._id));
+
     // Добавляем обработчик на изображение карточки
-    cardImage.addEventListener('click', function () {
-        viewingCard(card.name, card.link);
-    });
+    cardImage.addEventListener('click', () => viewingCard(card.name, card.link));
 
     return cardElement;
-};
+}
 
 // Функция удаления карточки
-export function deleteCard(cardElement, cardId) {
-    window.deleteCardsFormServer(cardId)
-        .then(() => {
-            cardElement.remove();
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+export function deleteCard(cardElement) {
+    cardElement.remove();
 };
 
-// Функция лайка для карточки
-// Функция лайка карточки
-export function likeCard(likeButton, cardId) {
-    const likedCard = likeButton.classList.contains('card__like-button_is-active');
+// Функция обновления лайков (кнопка и счетчик)
+export function changeLike(likes, cardElement, currentUserId) {
+    const likeButton = cardElement.querySelector('.card__like-button');
+    const numberOfLikes = cardElement.querySelector('.number-of-likes');
 
-    if (!likedCard) {
-        window.putLikeToCard(cardId)
-        .then((like) => {
-            // Добавляем класс для кнопки
-            likeButton.classList.toggle('card__like-button_is-active');
+    // Обновляем количество лайков
+    numberOfLikes.textContent = likes.length;
 
-            // Обновляем количество лайков на карточке
-            const numberOfLikes = likeButton.closest('.card').querySelector('.number-of-likes');
-            numberOfLikes.textContent = like.likes.length;
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+    // Проверяем, лайкнул ли текущий пользователь карточку
+    if (checkStatusLike(likes, currentUserId)) {
+        likeButton.classList.add('card__like-button_is-active');
     } else {
-        window.deleteLikeFromCard(cardId)
-            .then((like) => {
-                likeButton.classList.remove('card__like-button_is-active');
-
-                // Обновляем количество лайков на карточке
-                const numberOfLikes = likeButton.closest('.card').querySelector('.number-of-likes');
-                numberOfLikes.textContent = like.likes.length;
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        likeButton.classList.remove('card__like-button_is-active');
     }
+};
+
+// Функция проверки, лайкнул ли текущий пользователь карточку
+export function checkStatusLike(likes, currentUserId) {
+    return likes.some((user) => user._id === currentUserId);
 };

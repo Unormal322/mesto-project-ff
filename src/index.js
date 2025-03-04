@@ -1,5 +1,5 @@
 import './pages/index.css';
-import { createCard, deleteCard, likeCard } from './components/card.js';
+import { createCard, deleteCard, changeLike, checkStatusLike } from './components/card';
 import { openModal, closeModal } from './components/modal.js';
 import { enableValidation, validationConfig, clearValidation } from './scripts/validation.js';
 import { api } from './scripts/api.js'
@@ -59,7 +59,7 @@ allPopups.forEach( function (popup) {
 });
 
 // Функция обновления данных пользователя
-function newProfileInfo(data) {
+function editProfileInfo(data) {
     nameInput.textContent = data.name;
     jobInput.textContent = data.about;
 };
@@ -81,7 +81,7 @@ function sumbitProfileForm(evt) {
 
     api.patchProfileInfo(name, about)
         .then((userData) => {
-            newProfileInfo(userData);
+            editProfileInfo(userData);
             closeModal(popupEditProfile);
             renderInfo(userData);
         })
@@ -116,12 +116,11 @@ function addNewCard(evt) {
     api.postCards(name, link)
         .then((newCard) => {
             // Создаем карточку и добавляем на страницу в начало списка
-            cardList.prepend(createCard(newCard, currentUserId, deleteCard, likeCard, viewImage));
+            cardList.prepend(createCard(newCard, currentUserId, handleDelete, handleLike, viewImage));
 
             // Очищаем форму и закрываем модальное окно
             formAddCard.reset();
             closeModal(popupAddNewCard);
-            clearValidation(formAddCard, validationConfig);
         })
         .catch((err) => {
             console.log(err);
@@ -183,8 +182,7 @@ function addNewAvatar(evt) {
 
 // Функция для обновления аватара
 function updateAvatarOnPage(url) {
-    const avatar = profileAvatar;
-    avatar.src = url;
+    profileAvatar.src = url;
 }
 
 // Обработчки для события "submit" для карточки
@@ -196,20 +194,13 @@ enableValidation(validationConfig);
 // Воспользуемся методом Promise.all()
 Promise.all([api.getUserInformation(), api.getCardsList()])
     .then(([userData, cardsData]) => {
-        renderInfo(userData);
-        renderCards(cardsData, userData._id);
-    });
-
-// Получаем данные текущего пользователя
-api.getUserInformation()
-    .then((userData) => {
-        // Сохранияем id
+        // Сохранияем id пользователя
         currentUserId = userData._id;
-        // Выполняем загрузку карточек
-        return api.getCardsList();
-    })
-    .then((cardsData) => {
-        // Передаем id в рендеринг карточек
+
+        // Отображаем информацию о пользователе
+        renderInfo(userData);
+
+        // Отображаем карточки
         renderCards(cardsData, currentUserId);
     })
     .catch((err) => {
@@ -223,9 +214,42 @@ function renderInfo(data) {
     profileAvatar.src = data.avatar;
 };
 
-// Функция для отображения карточек на странице
-function renderCards(data, currentUserId) {
-    data.forEach((card) => {
-        cardList.append(createCard(card, currentUserId, deleteCard, likeCard, viewImage));
-    });
+// Функция поставить/снять лайк с карточки
+function handleLike(cardElement, cardId) {
+    // Получаем данные о лайках
+    const likes = JSON.parse(cardElement.dataset.likes);
+    const isLiked = checkStatusLike(likes, currentUserId);
+
+    (isLiked ? api.deleteLikeFromCard(cardId) : api.putLikeToCard(cardId))
+        .then((res) => {
+            // Обновляем лайки на карточке
+            changeLike(res.likes, cardElement, currentUserId);
+
+            // Обновляем данные о лайках в атрибуте
+            cardElement.dataset.likes = JSON.stringify(res.likes);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
+// Функция удалить карточку со страницы
+const handleDelete = (cardElement, cardId) => {
+    api.deleteCardsFromServer(cardId)
+        .then(() => {
+            // Удаляем карточку из DOM
+            deleteCard(cardElement);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 };
+
+
+// Функция для отображения карточек на странице
+function renderCards(cardsData, currentUserId) {
+    cardsData.forEach((card) => {
+        const cardElement = createCard(card, currentUserId, handleDelete, handleLike, viewImage);
+        cardList.append(cardElement);
+    });
+}

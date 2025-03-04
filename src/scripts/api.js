@@ -56,7 +56,7 @@ const postCards = (name, link) => {
 };
 
 // Лайк карточки
-window.putLikeToCard = (cardId) => {
+const putLikeToCard = (cardId) => {
     return fetch(serverConfig.baseUrl + '/cards/likes/' + cardId, {
         method: 'PUT',
         headers: serverConfig.headers
@@ -65,7 +65,7 @@ window.putLikeToCard = (cardId) => {
 };
 
 // Убрать лайк с карточки
-window.deleteLikeFromCard = (cardId) => {
+const deleteLikeFromCard = (cardId) => {
     return fetch(serverConfig.baseUrl + '/cards/likes/' + cardId, {
         method: 'DELETE',
         headers: serverConfig.headers
@@ -74,7 +74,7 @@ window.deleteLikeFromCard = (cardId) => {
 };
 
 // Удаление карточки с сервера
-window.deleteCardsFormServer = (cardId) => {
+const deleteCardsFromServer = (cardId) => {
     return fetch(serverConfig.baseUrl + '/cards/' + cardId, {
         method: 'DELETE',
         headers: serverConfig.headers
@@ -99,5 +99,8 @@ export const api = {
     getCardsList: getCardsList,
     patchProfileInfo: patchProfileInfo,
     postCards: postCards,
+    putLikeToCard: putLikeToCard,
+    deleteLikeFromCard: deleteLikeFromCard,
+    deleteCardsFromServer: deleteCardsFromServer,
     updateAvatar: updateAvatar
 };
