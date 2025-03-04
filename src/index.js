@@ -75,8 +75,8 @@ function sumbitProfileForm(evt) {
 
     api.patchProfileInfo(name, about)
         .then((userData) => {
-            closeModal(popupEditProfile);
             renderInfo(userData);
+            closeModal(popupEditProfile);
         })
         .catch((err) => {
             console.log(err);
