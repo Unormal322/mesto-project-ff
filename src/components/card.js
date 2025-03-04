@@ -63,5 +63,3 @@ export function changeLike(likes, cardElement, currentUserId) {
 export function checkStatusLike(likes, currentUserId) {
     return likes.some((user) => user._id === currentUserId);
 };
-
-// likeButton.classList.toggle('card__like-button_is-active');
