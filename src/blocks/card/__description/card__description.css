@@ -1,7 +1,17 @@
 .card__description {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   background: #fff;
-  padding: 25px 20px;
+  padding: 24px 20px 19px;
+  gap: 4px;
+}
+
+span.number-of-likes {
+  font-weight: 400;
+  font-size: 13px;
+  text-align: center;
+  color: #000;
+  justify-self: end;
+  padding: 0 7px 0 0;
 }
